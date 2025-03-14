@@ -311,9 +311,9 @@ new Vue({
         (q.correct === this.userAnswers[i]) ? count + 1 : count, 0)
     },
     level() {
-      if (this.correctCount <= 19) return 'A1';
-      else if (this.correctCount <= 29) return 'A2';
-      else if (this.correctCount <= 50) return 'B1';
+      if (this.correctCount <= 10) return 'A1';
+      else if (this.correctCount <= 15) return 'A2';
+      else if (this.correctCount <= 32) return 'B1';
       else return 'B2';
     },
     progress() {

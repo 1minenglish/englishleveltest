@@ -345,6 +345,8 @@ new Vue({
         correct: optionIndex === question.correct
       });
     },
+
+
     nextPage() {
       const currentQuestionIds = this.currentQuestionIndexes.map(i => 
         this.questions[i].id
@@ -359,37 +361,27 @@ new Vue({
         this.currentPage++
         window.scrollTo(0, 0)
       } else {
+        // ==== 修复1：删除重复的状态设置 ====
         this.currentPage = this.totalPages + 1
-        this.stopTimer()
-        this.submitPage8Data() // 改为调用专用提交方法
-
-        // ========== 修改开始 ==========
-        this.currentPage = this.totalPages + 1  // 强制进入结果页面
         this.stopTimer()
         this.resultDetails = Object.keys(this.userAnswers).map(qid => ({
           id: parseInt(qid),
           ...this.userAnswers[qid]
         }));
         console.log('最终答题结果:', this.resultDetails);
-        // ========== 修改结束 ==========
-
+        
+        this.submitPage8Data()
       }
     },
-    unlockReport() {
-      alert('支付系统正在对接中，即将开放！')
-    },
-    startTimer() {
-      this.timer = setInterval(() => this.timeSpent++, 1000)
-    },
-    stopTimer() {
-      clearInterval(this.timer)
 
-    // ========== 新增第8页数据提交方法 ==========
+    // ==== 修复2：方法层级修正 ====
     async submitPage8Data() {
-      // 获取第8页题目(36-40题)
+      const repoOwner = "1minenglish";
+      const repoName = "englishleveltest";
+      const accessToken = "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";
+
       const page8Questions = this.questions.slice(35, 40)
       
-      // 构建专属数据报告
       const report = {
         timestamp: new Date().toISOString(),
         totalCorrect: this.correctCount,
@@ -403,14 +395,13 @@ new Vue({
           correctAnswer: q.options[q.correct],
           isCorrect: this.userAnswers[q.id]?.correct || false
         }))
-      }
+      };
 
-      // 发送到GitHub Issues
       try {
-        const response = await fetch('https://api.github.com/repos/1minenglish/englishleveltest/issues', {
+        const response = await fetch(`https://api.github.com/repos/1minenglish/englishleveltest/issues`, {
           method: 'POST',
           headers: {
-            'Authorization': 'token ghp_你的令牌',
+            'Authorization': `token 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`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
@@ -420,25 +411,42 @@ new Vue({
           })
         });
 
-        if (response.ok) {
-          console.log('第8页数据提交成功');
-        }
+        if (!response.ok) throw new Error(`HTTP错误 ${response.status}`);
+        alert('数据已成功提交至GitHub！');
       } catch (error) {
         console.error('提交错误:', error);
+        alert('提交失败: ' + error.message);
       }
     },
 
-    // ========== 表格格式化方法 ==========
     formatPage8Table(data) {
+      const truncate = (str, max=18) => 
+        str.length > max ? str.substring(0, max-1)+"…" : str;
+      
       let table = '| 题号 | 题目 | 用户答案 | 正确答案 | 状态 |\n' +
                   '|------|------|----------|----------|------|\n';
       
       data.forEach(item => {
-        table += `| ${item.id} | ${item.question} | ${item.userChoice} ` +
-                 `| ${item.correctAnswer} | ${item.isCorrect ? '✅' : '❌'} |\n`;
+        table += `| ${item.id} ` +
+                 `| ${truncate(item.question)} ` +
+                 `| ${truncate(item.userChoice)} ` +
+                 `| ${truncate(item.correctAnswer)} ` +
+                 `| ${item.isCorrect ? '✅' : '❌'} |\n`;
       });
       
       return table;
+    },
+
+    unlockReport() {
+      alert('支付系统正在对接中，即将开放！')
+    },
+
+    startTimer() {
+      this.timer = setInterval(() => this.timeSpent++, 1000)
+    },
+
+    stopTimer() {
+      clearInterval(this.timer)
     }
   }
 })

@@ -378,7 +378,7 @@ new Vue({
     async submitPage8Data() {
       const repoOwner = "1minenglish";
       const repoName = "englishleveltest";
-      const accessToken = "ghp_";
+      const accessToken = "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";
 
       const page8Questions = this.questions.slice(35, 40)
       
@@ -401,7 +401,7 @@ new Vue({
         const response = await fetch(`https://api.github.com/repos/1minenglish/englishleveltest/issues`, {
           method: 'POST',
           headers: {
-            'Authorization': `token ghp_`,
+            'Authorization': `token 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`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({

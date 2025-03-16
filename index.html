@@ -380,7 +380,7 @@ new Vue({
         timestamp: new Date().toISOString(),
         totalCorrect: this.correctCount,
         timeUsed: this.formattedTime,
-        page8Details: this.questions.slice(35, 40).map(q => ({
+        allDetails: this.questions.map(q => ({
           id: q.id,
           userChoice: this.userAnswers[q.id]?.selected ?? '未作答',
           correctAnswer: q.correct
@@ -398,7 +398,7 @@ new Vue({
             timestamp: report.timestamp,
             totalCorrect: report.totalCorrect,
             timeUsed: report.timeUsed,
-            answers: report.page8Details.map(item => ({
+            answers: report.allDetails.map(item => ({
               ...item,
               correctAnswer: this.questions.find(q => q.id === item.id).options[item.correctAnswer]
             }))

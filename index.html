@@ -291,12 +291,9 @@ new Vue({
       { page: 3, emoji: "💪", text: "坚持就是胜利！", subText: "好的开始是成功的一半。" },
       { page: 5, emoji: "🌟", text: "高手在民间！", subText: "再坚持一下，快要完成咯！" },
       { page: 7, emoji: "🎯", text: "曙光就在前方！", subText: "你真棒！加油鸭" }
-    ]
-
-    // ...原有数据不变...
-    // 新增两个状态变量
+    ],
     showSubmissionStatus: false,
-    submissionSuccess: false
+    submissionSuccess: false,
   },
   created() {
     this.startTimer()
@@ -364,20 +361,7 @@ new Vue({
         this.currentPage++
         window.scrollTo(0, 0)
       } else {
-        this.currentPage = this.totalPages + 1
-        this.stopTimer()
-        this.submitPage8Data() // 改为调用专用提交方法
-
-        // ========== 修改开始 ==========
-        this.currentPage = this.totalPages + 1  // 强制进入结果页面
-        this.stopTimer()
-        this.resultDetails = Object.keys(this.userAnswers).map(qid => ({
-          id: parseInt(qid),
-          ...this.userAnswers[qid]
-        }));
-        console.log('最终答题结果:', this.resultDetails);
-        // ========== 修改结束 ==========
-
+        this.submitPage8Data()
       }
     },
     unlockReport() {
@@ -389,14 +373,9 @@ new Vue({
     stopTimer() {
       clearInterval(this.timer)
     },
-    // ========== 新增第8页数据提交方法 ==========
     async submitPage8Data() {
       this.showSubmissionStatus = true;
 
-      // 获取第8页题目(36-40题)
-      const page8Questions = this.questions.slice(35, 40)
-      
-      // 构建数据报告
       const report = {
         timestamp: new Date().toISOString(),
         totalCorrect: this.correctCount,
@@ -409,7 +388,7 @@ new Vue({
       }
 
       try {
-        const response = await fetch('https://formspree.io/f/mzzezgop', { // 替换为你的Formspree表单ID
+        const response = await fetch('https://formspree.io/f/mzzezgop', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -419,41 +398,39 @@ new Vue({
             timestamp: report.timestamp,
             totalCorrect: report.totalCorrect,
             timeUsed: report.timeUsed,
-            answers: report.page8Details
+            answers: report.page8Details.map(item => ({
+              ...item,
+              correctAnswer: this.questions.find(q => q.id === item.id).options[item.correctAnswer]
+            }))
           })
         });
 
         if (response.ok) {
           this.submissionSuccess = true;
-          setTimeout(() => {
-            this.showSubmissionStatus = false;
-          }, 3000);
+          setTimeout(() => this.showSubmissionStatus = false, 3000);
         }
       } catch (error) {
         this.submissionSuccess = false;
         console.error('提交错误:', error);
       } finally {
-        // 无论成功与否都进入结果页
         this.currentPage = this.totalPages + 1;
         this.stopTimer();
+        this.resultDetails = Object.keys(this.userAnswers).map(qid => ({
+          id: parseInt(qid),
+          ...this.userAnswers[qid]
+        }));
       }
     },
-
-    // ========== 表格格式化方法 ==========
     formatPage8Table(data) {
-      let table = '| 题号 | 题目 | 用户答案 | 正确答案 | 状态 |\n' +
-                  '|------|------|----------|----------|------|\n';
-      
+      let table = '| 题号 | 题目 | 用户答案 | 正确答案 | 状态 |\n|------|------|----------|----------|------|\n';
       data.forEach(item => {
-        table += `| ${item.id} | ${item.question} | ${item.userChoice} ` +
-                 `| ${item.correctAnswer} | ${item.isCorrect ? '✅' : '❌'} |\n`;
+        table += `| ${item.id} | ${item.question} | ${item.userChoice} | ${item.correctAnswer} | ${item.isCorrect ? '✅' : '❌'} |\n`;
       });
-      
       return table;
-
     }
   }
 })
+
 </script>
 </body>
 </html>

@@ -293,7 +293,7 @@ new Vue({
       { page: 7, emoji: "🎯", text: "曙光就在前方！", subText: "你真棒！加油鸭" }
     ],
     showSubmissionStatus: false,
-    submissionSuccess: false,
+    submissionSuccess: false
   },
   created() {
     this.startTimer()
@@ -407,7 +407,9 @@ new Vue({
 
         if (response.ok) {
           this.submissionSuccess = true;
-          setTimeout(() => this.showSubmissionStatus = false, 3000);
+          setTimeout(() => {
+            this.showSubmissionStatus = false;
+          }, 3000);
         }
       } catch (error) {
         this.submissionSuccess = false;
@@ -430,7 +432,6 @@ new Vue({
     }
   }
 })
-
 </script>
 </body>
 </html>

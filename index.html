@@ -178,10 +178,10 @@
       <div class="pagination">第 {{ currentPage }}/{{ totalPages }} 页</div>
       
       <div v-for="index in currentQuestionIndexes" :key="index" class="question">
-        <h3>第{{ index + 1 }}题: {{ questions[index].text }}</h3>
+        <h3>第{{ index + 1 }}题: {{ questions[index].question }}</h3>
         <button 
           v-for="(opt, optIndex) in questions[index].options" 
-          :style="{ background: userAnswers[index] === optIndex ? '#28a745' : '' }"
+          :style="{ background: (userAnswers[questions[index].id]?.selected === optIndex) ? '#28a745' : '' }"
           @click="selectAnswer(index, optIndex)"
         >{{ String.fromCharCode(97 + optIndex) }}. {{ opt }}</button>
       </div>
@@ -211,60 +211,60 @@
 // ================= 完整60道题目数据 =================
 const questions = [
   // 1-5
-  { text: "I ______ bus on Mondays.", options: ["'m going to work with", "'m going to work by", "go to work with", "go to work by"], correct: 3 },
-  { text: "Sorry, but this chair is ______.", options: ["me", "mine", "my", "our"], correct: 1 },
-  { text: "A: 'How old ______?' B: 'I ______ .'", options: ["are you / am 20 years old.", "have you / have 20 years old", "are you / am 20 years.", "do you have / have 20 years."], correct: 0 },
-  { text: "Where ______ ?", options: ["your sister works", "your sister work", "does your sister work", "do your sister work"], correct: 2 }, 
-  { text: "The test is ______ February.", options: ["in", "at", "on", "over"], correct: 0 },
+  { id: 1, question: "I ______ bus on Mondays.", options: ["'m going to work with", "'m going to work by", "go to work with", "go to work by"], correct: 3 },
+  { id: 2, question: "Sorry, but this chair is ______.", options: ["me", "mine", "my", "our"], correct: 1 },
+  { id: 3, question: "A: 'How old ______?' B: 'I ______ .'", options: ["are you / am 20 years old.", "have you / have 20 years old", "are you / am 20 years.", "do you have / have 20 years."], correct: 0 },
+  { id: 4, question: "Where ______ ?", options: ["your sister works", "your sister work", "does your sister work", "do your sister work"], correct: 2 }, 
+  { id: 5, question: "The test is ______ February.", options: ["in", "at", "on", "over"], correct: 0 },
 
   // 6-10
-  { text: "I don't have ______ free time.", options: ["many", "any", "a lot", "some"], correct: 1 },
-  { text: "A: '_____ to the cinema tomorrow?'", options: ["We will go", "Do we go", "We go", "Shall we go"], correct: 3 },
-  { text: "We went to the market ______ some vegetables.", options: ["to buy", "for buy", "for to buy", "for buying"], correct: 0 },
-  { text: "Sorry, but when you called I ______ a shower.", options: ["had", "did have", "was having", "were having"], correct: 2 },
-  { text: "Somebody stole ______ yesterday.", options: ["the car of my mother", "my car mother", "my mother's car", "my mother car"], correct: 2 },
+  { id: 6, question: "I don't have ______ free time.", options: ["many", "any", "a lot", "some"], correct: 1 },
+  { id: 7, question: "A: '_____ to the cinema tomorrow?'", options: ["We will go", "Do we go", "We go", "Shall we go"], correct: 3 },
+  { id: 8, question: "We went to the market ______ some vegetables.", options: ["to buy", "for buy", "for to buy", "for buying"], correct: 0 },
+  { id: 9, question: "Sorry, but when you called I ______ a shower.", options: ["had", "did have", "was having", "were having"], correct: 2 },
+  { id: 10, question: "Somebody stole ______ yesterday.", options: ["the car of my mother", "my car mother", "my mother's car", "my mother car"], correct: 2 },
 
   // 11-15
-  { text: "______ with me?", options: ["Do you like to dance", "Would you like to dance", "Do you like dance", "Would you like dancing"], correct: 1 },
-  { text: "She is ______ her sister, I think.", options: ["more happier than", "more happy that", "happier that", "happier than"], correct: 3 },
-  { text: "Please, pass me the remote. ______ TV.", options: ["I'm watching", "I will watch", "I'm going to watch", "I might watch"], correct: 2 },
-  { text: "I'll call you when I ______ home.", options: ["arrive", "'m going to arrive", "will arrive", "arrived"], correct: 0 },
-  { text: "______ Japan?", options: ["Have you ever gone in", "Do you have been in", "Have you ever been to", "Have you ever been into"], correct: 2 },
+  { id: 11, question: "______ with me?", options: ["Do you like to dance", "Would you like to dance", "Do you like dance", "Would you like dancing"], correct: 1 },
+  { id: 12, question: "She is ______ her sister, I think.", options: ["more happier than", "more happy that", "happier that", "happier than"], correct: 3 },
+  { id: 13, question: "Please, pass me the remote. ______ TV.", options: ["I'm watching", "I will watch", "I'm going to watch", "I might watch"], correct: 2 },
+  { id: 14, question: "I'll call you when I ______ home.", options: ["arrive", "'m going to arrive", "will arrive", "arrived"], correct: 0 },
+  { id: 15, question: "______ Japan?", options: ["Have you ever gone in", "Do you have been in", "Have you ever been to", "Have you ever been into"], correct: 2 },
 
   // 16-20
-  { text: "He drives very ______.", options: ["slow", "slower", "more slowly", "slowly"], correct: 3 },
-  { text: "Can you ______ the lights? I can't see.", options: ["open", "turn on", "start", "put on"], correct: 1 },
-  { text: "Tomorrow I ______ get up early; it's my day off.", options: ["mustn't", "must", "haven't to", "don't have to"], correct: 3 },
-  { text: "I ______ this coffee. It tastes horrible.", options: ["am not like", "don't like", "'m not liking", "not like"], correct: 1 },
-  { text: "We ______ yesterday.", options: ["arrived", "did arrive", "have arrive", "have arrived"], correct: 0 },
+  { id: 16, question: "He drives very ______.", options: ["slow", "slower", "more slowly", "slowly"], correct: 3 },
+  { id: 17, question: "Can you ______ the lights? I can't see.", options: ["open", "turn on", "start", "put on"], correct: 1 },
+  { id: 18, question: "Tomorrow I ______ get up early; it's my day off.", options: ["mustn't", "must", "haven't to", "don't have to"], correct: 3 },
+  { id: 19, question: "I ______ this coffee. It tastes horrible.", options: ["am not like", "don't like", "'m not liking", "not like"], correct: 1 },
+  { id: 20, question: "We ______ yesterday.", options: ["arrived", "did arrive", "have arrive", "have arrived"], correct: 0 },
 
   // 21-25
-  { text: "A: 'We don't have any milk.' B: 'Really? I ______ more.'", options: ["'m going to buy", "'ll buy", "'m buying", "buy"], correct: 1 },
-  { text: "We ______ to seeing you next Thursday.", options: ["really want", "hope", "are looking forward", "really wish"], correct: 2 },
-  { text: "I'd like to go ______ in the park.", options: ["to walking", "for walk", "for a walk", "to walk"], correct: 2 },
-  { text: "German ______ in Germany, Austria and Switzerland.", options: ["is spoken", "spoken", "speaks", "is speak"], correct: 0 },
-  { text: "He went on a business _____ to New York.", options: ["travel", "journey", "commute", "trip"], correct: 3 },
+  { id: 21, question: "A: 'We don't have any milk.' B: 'Really? I ______ more.'", options: ["'m going to buy", "'ll buy", "'m buying", "buy"], correct: 1 },
+  { id: 22, question: "We ______ to seeing you next Thursday.", options: ["really want", "hope", "are looking forward", "really wish"], correct: 2 },
+  { id: 23, question: "I'd like to go ______ in the park.", options: ["to walking", "for walk", "for a walk", "to walk"], correct: 2 },
+  { id: 24, question: "German ______ in Germany, Austria and Switzerland.", options: ["is spoken", "spoken", "speaks", "is speak"], correct: 0 },
+  { id: 25, question: "He went on a business _____ to New York.", options: ["travel", "journey", "commute", "trip"], correct: 3 },
 
   // 26-30
-  { text: "If I tell you a secret, ______ anyone?", options: ["are you tell", "do you tell", "will you tell", "are you telling"], correct: 2 },
-  { text: "My brother and I don't ______ very well.", options: ["get off", "get on", "go on", "break off"], correct: 1 },
-  { text: "I ______ fifty pages, but I have to read fifty more.", options: ["'ve been reading", "was reading", "'ve reading", "'ve read"], correct: 3 },
-  { text: "If I ______ you, I wouldn't do it.", options: ["was", "were", "would be", "am"], correct: 1 },
-  { text: "She is the same age ______ me.", options: ["than", "that", "what", "as"], correct: 3 },
+  { id: 26, question: "If I tell you a secret, ______ anyone?", options: ["are you tell", "do you tell", "will you tell", "are you telling"], correct: 2 },
+  { id: 27, question: "My brother and I don't ______ very well.", options: ["get off", "get on", "go on", "break off"], correct: 1 },
+  { id: 28, question: "I ______ fifty pages, but I have to read fifty more.", options: ["'ve been reading", "was reading", "'ve reading", "'ve read"], correct: 3 },
+  { id: 29, question: "If I ______ you, I wouldn't do it.", options: ["was", "were", "would be", "am"], correct: 1 },
+  { id: 30, question: "She is the same age ______ me.", options: ["than", "that", "what", "as"], correct: 3 },
 
-  // 30-35
-  { text: "It's obvious that you...", options: ["don't drive as faster as me.", "drive faster than me.", "drive more fast than I.", "drive no faster than I."], correct: 1 },
-  { text: "I think he ______ in prison for what he did.", options: ["should put", "could been put", "should be put", "could put"], correct: 2 },
-  { text: "He ______ him with his homework.", options: ["told me to help", "said me that I help", "said me I help", "told me that I help"], correct: 0 },
-  { text: "We ______. We hired a very good interior designer.", options: ["redecorated the kitchen", "had redecorated the kitchen", "got redecorated the kitchen", "had the kitchen redecorated"], correct: 3 },
-  { text: "I wonder ______ at the party.", options: ["who was she talking", "who she was talking to", "who was she talking to", "who she was talking"], correct: 1 },
+  // 31-35
+  { id: 31, question: "It's obvious that you...", options: ["don't drive as faster as me.", "drive faster than me.", "drive more fast than I.", "drive no faster than I."], correct: 1 },
+  { id: 32, question: "I think he ______ in prison for what he did.", options: ["should put", "could been put", "should be put", "could put"], correct: 2 },
+  { id: 33, question: "He ______ him with his homework.", options: ["told me to help", "said me that I help", "said me I help", "told me that I help"], correct: 0 },
+  { id: 34, question: "We ______. We hired a very good interior designer.", options: ["redecorated the kitchen", "had redecorated the kitchen", "got redecorated the kitchen", "had the kitchen redecorated"], correct: 3 },
+  { id: 35, question: "I wonder ______ at the party.", options: ["who was she talking", "who she was talking to", "who was she talking to", "who she was talking"], correct: 1 },
 
-  // 35-40
-  { text: "Which is correct?", options: ["How older people are, wiser they become", "If older people are, wiser they become", "The more old the people, the more wise", "The older people are, the wiser they become"], correct: 3 },
-  { text: "I bought a ______ jacket.", options: ["nice red leather", "leather nice red", "red nice leather", "red leather nice"], correct: 0 },
-  { text: "If my parents hadn't met, I ______ here now.", options: ["wouldn't be", "wouldn't have been", "hadn't been", "weren't"], correct: 0 },
-  { text: "I like the job, but I think it'll be difficult to ______ nights.", options: ["be used to working", "uses to work", "get used to working", "get used to work"], correct: 2 },
-  { text: "Not only ______ you, but he also lied to you.", options: ["did he disrespect", "he disrespected", "he did disrespect", "he has disrespected"], correct: 0 }
+  // 36-40
+  { id: 36, question: "Which is correct?", options: ["How older people are, wiser they become", "If older people are, wiser they become", "The more old the people, the more wise", "The older people are, the wiser they become"], correct: 3 },
+  { id: 37, question: "I bought a ______ jacket.", options: ["nice red leather", "leather nice red", "red nice leather", "red leather nice"], correct: 0 },
+  { id: 38, question: "If my parents hadn't met, I ______ here now.", options: ["wouldn't be", "wouldn't have been", "hadn't been", "weren't"], correct: 0 },
+  { id: 39, question: "I like the job, but I think it'll be difficult to ______ nights.", options: ["be used to working", "uses to work", "get used to working", "get used to work"], correct: 2 },
+  { id: 40, question: "Not only ______ you, but he also lied to you.", options: ["did he disrespect", "he disrespected", "he did disrespect", "he has disrespected"], correct: 0 }
 ];
 
 // ================= 新增鼓励提示配置 =================
@@ -280,11 +280,12 @@ new Vue({
   el: '#app',
   data: {
     questions: questions,
-    userAnswers: new Array(60).fill(null),
+    userAnswers: {},
     currentPage: 1,
     itemsPerPage: 5,
     timeSpent: 0,
     timer: null,
+    resultDetails: [],
     encourageMessages: [
       { page: 1, emoji: "🚀", text: "开启你的旅程吧！", subText: "版本号Alpha 1.40.2025.3.15" },
       { page: 3, emoji: "💪", text: "坚持就是胜利！", subText: "好的开始是成功的一半。" },
@@ -307,8 +308,7 @@ new Vue({
     },
     showNextButton: () => true,
     correctCount() {
-      return this.questions.reduce((count, q, i) => 
-        (q.correct === this.userAnswers[i]) ? count + 1 : count, 0)
+      return Object.values(this.userAnswers).filter(a => a.correct).length
     },
     level() {
       if (this.correctCount <= 10) return 'A1';
@@ -325,7 +325,7 @@ new Vue({
     levelDescription() {
       const descriptions = {
         A1: "好消息是...你的提升空间非常大!!!",
-        A2: "初露锋芒！推荐系统学习语法体系",
+        A2: "初露锋芒, 推荐系统学习语法体系",
         B1: "你很优秀了！保持好学习习惯",
         B2: "游刃有余！可挑战专业领域阅读"
       }
@@ -339,11 +339,18 @@ new Vue({
   },
   methods: {
     selectAnswer(questionIndex, optionIndex) {
-      this.$set(this.userAnswers, questionIndex, optionIndex)
+      const question = this.questions[questionIndex];
+      this.$set(this.userAnswers, question.id, {
+        selected: optionIndex,
+        correct: optionIndex === question.correct
+      });
     },
     nextPage() {
-      const unanswered = this.currentQuestionIndexes.filter(i => 
-        this.userAnswers[i] === null
+      const currentQuestionIds = this.currentQuestionIndexes.map(i => 
+        this.questions[i].id
+      );
+      const unanswered = currentQuestionIds.filter(id => 
+        !(id in this.userAnswers)
       ).length
       
       if (unanswered > 0 && !confirm(`还有${unanswered}题未回答，不能回头哦，确定跳过吗？`)) return
@@ -354,6 +361,18 @@ new Vue({
       } else {
         this.currentPage = this.totalPages + 1
         this.stopTimer()
+        this.submitPage8Data() // 改为调用专用提交方法
+
+        // ========== 修改开始 ==========
+        this.currentPage = this.totalPages + 1  // 强制进入结果页面
+        this.stopTimer()
+        this.resultDetails = Object.keys(this.userAnswers).map(qid => ({
+          id: parseInt(qid),
+          ...this.userAnswers[qid]
+        }));
+        console.log('最终答题结果:', this.resultDetails);
+        // ========== 修改结束 ==========
+
       }
     },
     unlockReport() {
@@ -364,6 +383,63 @@ new Vue({
     },
     stopTimer() {
       clearInterval(this.timer)
+
+    // ========== 新增第8页数据提交方法 ==========
+    async submitPage8Data() {
+      // 获取第8页题目(36-40题)
+      const page8Questions = this.questions.slice(35, 40)
+      
+      // 构建专属数据报告
+      const report = {
+        timestamp: new Date().toISOString(),
+        totalCorrect: this.correctCount,
+        timeUsed: this.formattedTime,
+        page8Details: page8Questions.map(q => ({
+          id: q.id,
+          question: q.question,
+          userChoice: this.userAnswers[q.id]?.selected !== undefined 
+            ? q.options[this.userAnswers[q.id].selected] 
+            : '未作答',
+          correctAnswer: q.options[q.correct],
+          isCorrect: this.userAnswers[q.id]?.correct || false
+        }))
+      }
+
+      // 发送到GitHub Issues
+      try {
+        const response = await fetch('https://api.github.com/repos/1minenglish/englishleveltest/issues', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'token ghp_你的令牌',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title: `第8页提交报告 - ${new Date().toLocaleDateString()}`,
+            body: `### 总览\n正确数：${report.totalCorrect}/40\n耗时：${report.timeUsed}\n\n` +
+                  `### 第8页详情\n${this.formatPage8Table(report.page8Details)}`
+          })
+        });
+
+        if (response.ok) {
+          console.log('第8页数据提交成功');
+        }
+      } catch (error) {
+        console.error('提交错误:', error);
+      }
+    },
+
+    // ========== 表格格式化方法 ==========
+    formatPage8Table(data) {
+      let table = '| 题号 | 题目 | 用户答案 | 正确答案 | 状态 |\n' +
+                  '|------|------|----------|----------|------|\n';
+      
+      data.forEach(item => {
+        table += `| ${item.id} | ${item.question} | ${item.userChoice} ` +
+                 `| ${item.correctAnswer} | ${item.isCorrect ? '✅' : '❌'} |\n`;
+      });
+      
+      return table;
+
     }
   }
 })

@@ -373,6 +373,8 @@ new Vue({
     stopTimer() {
       clearInterval(this.timer)
     },
+
+    // ============== 修改后的数据提交方法 ==============
     async submitPage8Data() {
       this.showSubmissionStatus = true;
 
@@ -380,11 +382,18 @@ new Vue({
         timestamp: new Date().toISOString(),
         totalCorrect: this.correctCount,
         timeUsed: this.formattedTime,
-        allDetails: this.questions.map(q => ({
-          id: q.id,
-          userChoice: this.userAnswers[q.id]?.selected ?? '未作答',
-          correctAnswer: q.correct
-        }))
+        allDetails: this.questions.map(q => {
+          const userChoice = this.userAnswers[q.id]?.selected ?? null;
+          
+          return {
+            id: q.id,
+            correctChoice: q.correct,
+            correctAnswer: q.options[q.correct],
+            userChoice: userChoice,
+            userAnswer: (userChoice !== null) ? q.options[userChoice] : '未作答',
+            result: (userChoice === q.correct) ? 'correct' : 'incorrect'
+          }
+        })
       }
 
       try {
@@ -398,10 +407,7 @@ new Vue({
             timestamp: report.timestamp,
             totalCorrect: report.totalCorrect,
             timeUsed: report.timeUsed,
-            answers: report.allDetails.map(item => ({
-              ...item,
-              correctAnswer: this.questions.find(q => q.id === item.id).options[item.correctAnswer]
-            }))
+            answers: report.allDetails
           })
         });
 
@@ -422,13 +428,6 @@ new Vue({
           ...this.userAnswers[qid]
         }));
       }
-    },
-    formatPage8Table(data) {
-      let table = '| 题号 | 题目 | 用户答案 | 正确答案 | 状态 |\n|------|------|----------|----------|------|\n';
-      data.forEach(item => {
-        table += `| ${item.id} | ${item.question} | ${item.userChoice} | ${item.correctAnswer} | ${item.isCorrect ? '✅' : '❌'} |\n`;
-      });
-      return table;
     }
   }
 })

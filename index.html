@@ -179,7 +179,7 @@
       
       <div v-for="index in currentQuestionIndexes" :key="index" class="question">
         <h3>第{{ index + 1 }}题: {{ questions[index].question }}</h3>
-        <button 
+        <button> 
           v-for="(opt, optIndex) in questions[index].options" 
           :style="{ background: (userAnswers[questions[index].id]?.selected === optIndex) ? '#28a745' : '' }"
           @click="selectAnswer(index, optIndex)"

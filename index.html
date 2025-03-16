@@ -292,6 +292,11 @@ new Vue({
       { page: 5, emoji: "🌟", text: "高手在民间！", subText: "再坚持一下，快要完成咯！" },
       { page: 7, emoji: "🎯", text: "曙光就在前方！", subText: "你真棒！加油鸭" }
     ]
+
+    // ...原有数据不变...
+    // 新增两个状态变量
+    showSubmissionStatus: false,
+    submissionSuccess: false
   },
   created() {
     this.startTimer()
@@ -386,45 +391,51 @@ new Vue({
     },
     // ========== 新增第8页数据提交方法 ==========
     async submitPage8Data() {
+      this.showSubmissionStatus = true;
+
       // 获取第8页题目(36-40题)
       const page8Questions = this.questions.slice(35, 40)
       
-      // 构建专属数据报告
+      // 构建数据报告
       const report = {
         timestamp: new Date().toISOString(),
         totalCorrect: this.correctCount,
         timeUsed: this.formattedTime,
-        page8Details: page8Questions.map(q => ({
+        page8Details: this.questions.slice(35, 40).map(q => ({
           id: q.id,
-          question: q.question,
-          userChoice: this.userAnswers[q.id]?.selected !== undefined 
-            ? q.options[this.userAnswers[q.id].selected] 
-            : '未作答',
-          correctAnswer: q.options[q.correct],
-          isCorrect: this.userAnswers[q.id]?.correct || false
+          userChoice: this.userAnswers[q.id]?.selected ?? '未作答',
+          correctAnswer: q.correct
         }))
       }
 
-      // 发送到GitHub Issues
       try {
-        const response = await fetch('https://api.github.com/repos/1minenglish/englishleveltest/issues', {
+        const response = await fetch('https://formspree.io/f/mzzezgop', { // 替换为你的Formspree表单ID
           method: 'POST',
           headers: {
-            'Authorization': 'token ghp_你的令牌',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
           },
           body: JSON.stringify({
-            title: `第8页提交报告 - ${new Date().toLocaleDateString()}`,
-            body: `### 总览\n正确数：${report.totalCorrect}/40\n耗时：${report.timeUsed}\n\n` +
-                  `### 第8页详情\n${this.formatPage8Table(report.page8Details)}`
+            timestamp: report.timestamp,
+            totalCorrect: report.totalCorrect,
+            timeUsed: report.timeUsed,
+            answers: report.page8Details
           })
         });
 
         if (response.ok) {
-          console.log('第8页数据提交成功');
+          this.submissionSuccess = true;
+          setTimeout(() => {
+            this.showSubmissionStatus = false;
+          }, 3000);
         }
       } catch (error) {
+        this.submissionSuccess = false;
         console.error('提交错误:', error);
+      } finally {
+        // 无论成功与否都进入结果页
+        this.currentPage = this.totalPages + 1;
+        this.stopTimer();
       }
     },
 
